@@ -20,8 +20,14 @@ jobs:
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
     - name: Publish to GitHub Package Registry
       run: |
-        cd packages/core
-        yarn publish
+            yarn lerna publish \
+            --yes \
+            --no-verify-access \
+            --canary \
+            --no-push \
+            --exact \
+            --force-publish \
+            --preid ${GITHUB_REF##*/}
       env:
         NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
