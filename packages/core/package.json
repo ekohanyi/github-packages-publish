@@ -3,9 +3,6 @@
   "version": "1.0.1",
   "main": "index.js",
   "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "repository" : {
     "type" : "git",
     "url": "git://github.com/dtothefp/github-packages-publish.git",
