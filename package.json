@@ -13,5 +13,11 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/dtothefp/github-packages-publish.git"
+  },
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  },
+  "scripts": {
+    "lerna": "lerna"
   }
 }
