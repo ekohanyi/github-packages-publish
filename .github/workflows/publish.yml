@@ -28,7 +28,7 @@ jobs:
             --no-push \
             --exact \
             --force-publish \
-            --preid ${GITHUB_REF##*/}
+            --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
       env:
         NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
