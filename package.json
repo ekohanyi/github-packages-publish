@@ -21,6 +21,7 @@
     "lerna": "lerna"
   },
   "dependencies": {
+    "@goodrx/good-ui-core": "1.0.67-dfp-parellel-ci-steps-4bc0333.0",
     "@grxfrontend/eslint-config-grx": "^1.1.0"
   }
 }
