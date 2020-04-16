@@ -12,16 +12,18 @@ jobs:
       with:
         node-version: 12
         registry-url: https://npm.pkg.github.com/
-        scope: '@dtothefp'
+      env:
+        ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
     - name: Install
       run: yarn
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-        ACTIONS_STEP_DEBUG: true
         NPM_TOKEN_GRX: ${{secrets.NPM_TOKEN_GRX}}
+        ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
     - name: Publish to GitHub Package Registry
       run: |
+            echo pwd
             yarn lerna publish \
             --registry "https://npm.pkg.github.com/" \
             --yes \
@@ -34,4 +36,4 @@ jobs:
       env:
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
         NPM_TOKEN_GRX: ${{secrets.NPM_TOKEN_GRX}}
-        ACTIONS_STEP_DEBUG: true
+        ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
