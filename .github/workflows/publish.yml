@@ -21,6 +21,7 @@ jobs:
     - name: Publish to GitHub Package Registry
       run: |
             yarn lerna publish \
+            --registry "https://npm.pkg.github.com/" \
             --yes \
             --no-verify-access \
             --canary \
