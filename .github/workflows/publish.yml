@@ -23,7 +23,7 @@ jobs:
         ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
     - name: Publish to GitHub Package Registry
       run: |
-            echo pwd
+            pwd
             yarn lerna publish \
             --registry "https://npm.pkg.github.com/" \
             --yes \
