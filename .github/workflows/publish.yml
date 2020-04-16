@@ -16,9 +16,10 @@ jobs:
     - name: Install
       run: yarn
       env:
-        NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
         ACTIONS_STEP_DEBUG: true
+        NPM_TOKEN_GRX: ${{secrets.GITHUB_TOKEN}}
     - name: Publish to GitHub Package Registry
       run: |
             yarn lerna publish \
@@ -31,6 +32,7 @@ jobs:
             --force-publish \
             --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
       env:
-        NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+        NPM_TOKEN_GRX: ${{secrets.GITHUB_TOKEN}}
         ACTIONS_STEP_DEBUG: true
