@@ -19,5 +19,8 @@
   },
   "scripts": {
     "lerna": "lerna"
+  },
+  "dependencies": {
+    "@grxfrontend/eslint-config-grx": "^1.1.0"
   }
 }
