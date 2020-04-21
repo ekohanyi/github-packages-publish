@@ -1,8 +1,9 @@
 name: test-triggers
 on:
   push:
-    branches:
-      - '*'
+    branches: [master]
+  pull_request:
+    branches: '*'
 jobs:
   test-trigger:
     runs-on: ubuntu-latest
@@ -23,4 +24,5 @@ jobs:
         ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
     - name: Echo to STDOUT
       run: |
-        echo "Running STuff"
+        echo "Running Changed Stuff"
+        echo "Running Changed Stuff"
