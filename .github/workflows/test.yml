@@ -1,0 +1,39 @@
+name: publish-packages
+on:
+  push:
+    branches:
+      - '*'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dtothefp/setup-node@dfp-auth
+      with:
+        node-version: 12
+        registry-url: https://npm.pkg.github.com/
+      env:
+        ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
+    - name: Install
+      run: yarn
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+        NPM_TOKEN_GRX: ${{secrets.NPM_TOKEN_GRX}}
+        ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
+    - name: Publish to GitHub Package Registry
+      run: |
+            pwd
+            yarn lerna publish \
+            --registry "https://npm.pkg.github.com/" \
+            --yes \
+            --no-verify-access \
+            --canary \
+            --no-push \
+            --exact \
+            --force-publish \
+            --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
+      env:
+        NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+        NPM_TOKEN_GRX: ${{secrets.NPM_TOKEN_GRX}}
+        ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}

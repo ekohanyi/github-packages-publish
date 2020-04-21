@@ -1,8 +1,9 @@
-name: publish-packages
+name: test-triggers
 on:
   push:
-    branches:
-      - '*'
+    branches: [master]
+  pull_request:
+    branches: [master]
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -21,19 +22,6 @@ jobs:
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
         NPM_TOKEN_GRX: ${{secrets.NPM_TOKEN_GRX}}
         ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
-    - name: Publish to GitHub Package Registry
+    - name: Echo to STDOUT
       run: |
-            pwd
-            yarn lerna publish \
-            --registry "https://npm.pkg.github.com/" \
-            --yes \
-            --no-verify-access \
-            --canary \
-            --no-push \
-            --exact \
-            --force-publish \
-            --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
-      env:
-        NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-        NPM_TOKEN_GRX: ${{secrets.NPM_TOKEN_GRX}}
-        ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
+        echo "Running"
