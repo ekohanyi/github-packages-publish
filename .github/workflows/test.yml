@@ -1,8 +1,7 @@
 name: test-triggers
 on:
   push:
-    branches:
-      - '*'
+    branches: [master]
 jobs:
   test-trigger:
     runs-on: ubuntu-latest
