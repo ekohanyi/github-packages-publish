@@ -23,4 +23,4 @@ jobs:
         ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
     - name: Echo to STDOUT
       run: |
-        echo "Running"
+        echo "Running STuff"
