@@ -1,13 +1,27 @@
 {
   "name": "@dtothefp/gh-actions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/**"
+  ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/dtothefp/github-packages-publish.git"
+  },
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  },
+  "scripts": {
+    "build": "echo 'BUILD'",
+    "lerna": "lerna"
+  },
+  "dependencies": {
+    "@grxfrontend/eslint-config-grx": "^1.1.0"
   }
 }

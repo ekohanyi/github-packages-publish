@@ -1,0 +1,11 @@
+{
+  "name": "@dtothefp/core",
+  "version": "1.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "repository" : {
+    "type" : "git",
+    "url": "git://github.com/dtothefp/github-packages-publish.git",
+    "directory": "packages/core"
+  }
+}
