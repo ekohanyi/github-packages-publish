@@ -1,7 +1,7 @@
 name: test-triggers
 on:
   push:
-    branches: [master]
+    branches: '*'
   pull_request:
     branches: [master]
 jobs:
