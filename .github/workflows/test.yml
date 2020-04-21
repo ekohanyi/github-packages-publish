@@ -2,6 +2,8 @@ name: test-triggers
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
 jobs:
   test-trigger:
     runs-on: ubuntu-latest
