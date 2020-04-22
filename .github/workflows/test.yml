@@ -16,11 +16,13 @@ jobs:
         registry-url: https://npm.pkg.github.com/
       env:
         ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
+    - uses: dtothefp/actions-ci-env@master
     - name: Echo Env
       run: |
         echo "REF_BRANCH $GITHUB_REF"
         echo "EVENT_BRANCH $EVENT_BRANCH"
         echo "HEAD ENV $GITHUB_HEAD_REF"
+        echo "BRANCH NAME $BRANCH_NAME"
       env:
         EVENT_BRANCH: ${{ github.event.pull_request.head.ref }}
     - name: Install
