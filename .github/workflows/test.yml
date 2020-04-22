@@ -1,10 +1,10 @@
 name: test-triggers
 on:
   push:
-    # branches: [master]
-    branches: '*'
-  # pull_request:
+    branches: [master]
     # branches: '*'
+  pull_request:
+    branches: '*'
 jobs:
   test-trigger:
     runs-on: ubuntu-latest
