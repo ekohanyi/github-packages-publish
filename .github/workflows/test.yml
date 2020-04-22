@@ -34,4 +34,3 @@ jobs:
     - name: Echo to STDOUT
       run: |
         echo "Running Changed Stuff"
-        echo "Running Changed Stuff"
