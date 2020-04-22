@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: siddharthkp/ci-env
     - uses: dtothefp/setup-node@dfp-auth
       with:
         node-version: 12
