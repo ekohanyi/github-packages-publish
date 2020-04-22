@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: siddharthkp/ci-env
     - uses: dtothefp/setup-node@dfp-auth
       with:
         node-version: 12
@@ -20,6 +21,7 @@ jobs:
       run: |
         echo "REF_BRANCH $GITHUB_REF"
         echo "EVENT_BRANCH $EVENT_BRANCH"
+        echo "HEAD ENV $GITHUB_HEAD_REF"
       env:
         EVENT_BRANCH: ${{ github.event.pull_request.head.ref }}
     - name: Install
