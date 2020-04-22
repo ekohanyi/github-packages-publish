@@ -21,7 +21,7 @@ jobs:
         echo "EVENT_BRANCH $EVENT_BRANCH"
       env:
         REF_BRANCH: ${{ env.GITHUB_REF }}
-        EVENT_BRANCH: {{ github.event.pull_request.head.ref }}
+        EVENT_BRANCH: ${{ github.event.pull_request.head.ref }}
     - name: Install
       run: yarn
       env:
