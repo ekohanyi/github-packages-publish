@@ -17,10 +17,9 @@ jobs:
         ACTIONS_STEP_DEBUG: ${{secrets.ACTIONS_STEP_DEBUG}}
     - name: Echo Env
       run: |
-        echo "REF_BRANCH $REF_BRANCH"
+        echo "REF_BRANCH $GITHUB_REF"
         echo "EVENT_BRANCH $EVENT_BRANCH"
       env:
-        REF_BRANCH: ${{ env.GITHUB_REF }}
         EVENT_BRANCH: ${{ github.event.pull_request.head.ref }}
     - name: Install
       run: yarn
