@@ -101,7 +101,6 @@ jobs:
         run: |
           yarn lerna publish \
           --registry "https://npm.pkg.github.com/" \
-          --git-remote release \
           --yes \
           --no-verify-access \
           --exact \
