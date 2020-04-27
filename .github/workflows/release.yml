@@ -92,7 +92,7 @@ jobs:
         run: yarn build
       - name: Publish to GitHub Package Registry
         run: |
-          git checkout pub/release
+          git checkout origin/release && git pull
           yarn lerna publish \
           --registry "https://npm.pkg.github.com/" \
           --git-remote release \
