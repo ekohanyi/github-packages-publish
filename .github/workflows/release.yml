@@ -75,6 +75,13 @@ jobs:
           node-version: 13.3.0
           registry-url: https://npm.pkg.github.com/
           scope: "@ekohanyi"
+      - name: Configure CI Git User
+        run: |
+          git config --global user.name 'ekohanyi'
+          git config --global user.email 'emmajk2012@gmail.com'
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Restore Cache
         id: cache-node-modules
         uses: actions/cache@master
@@ -89,10 +96,10 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn
       - name: Build
-        run: yarn build
+        run: yarn buil
       - name: Publish to GitHub Package Registry
         run: |
-          git checkout master
+          git checkout release
           yarn lerna publish \
           --registry "https://npm.pkg.github.com/" \
           --git-remote release \
