@@ -6,8 +6,9 @@ name: Release
 # events but only for the master branch
 on:
   push:
-    branches:
-      - "master"
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 env:
   NODE_VERSION: 13.3.0
