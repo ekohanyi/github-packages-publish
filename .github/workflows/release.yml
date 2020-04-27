@@ -102,7 +102,6 @@ jobs:
           --yes \
           --no-verify-access \
           --exact \
-          --force-publish \
           --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
