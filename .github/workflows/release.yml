@@ -75,8 +75,8 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Prepare repository
-        run: git checkout "${GITHUB_REF:11}" && git pull
+      # - name: Prepare repository
+      #   run: git checkout "${GITHUB_REF:11}" && git pull
       - uses: actions/setup-node@master
         with:
           node-version: 13.3.0
