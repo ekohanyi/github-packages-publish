@@ -1,0 +1,11 @@
+{
+  "name": "@ekohanyi/second",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ekohanyi/github-packages-publish.git",
+    "directory": "packages/second"
+  }
+}
