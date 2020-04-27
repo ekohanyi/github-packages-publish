@@ -101,7 +101,6 @@ jobs:
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
-          --exact \
           --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
