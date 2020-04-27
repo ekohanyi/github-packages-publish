@@ -78,7 +78,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare repository
-        run: git checkout "${GITHUB_REF:11}" && git pull
+        run: git checkout "${GITHUB_REF}" && git pull
       - uses: actions/setup-node@master
         with:
           node-version: 13.3.0
