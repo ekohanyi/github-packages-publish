@@ -9,9 +9,10 @@ on:
     branches: [master]
 
 env:
+  BUCKET_NAME: good-ui-static-assets
   NODE_VERSION: 13.3.0
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-  PROJECT_ID: github-packages-publish
+  PROJECT_ID: good-ui
 
 jobs:
   install:
