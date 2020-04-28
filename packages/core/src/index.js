@@ -11,3 +11,5 @@ console.log("i changed on master");
 console.log("i changed on master again");
 
 console.log("i changed on master with workaround");
+
+console.log("i changed on both packages");
