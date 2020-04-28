@@ -101,7 +101,7 @@ jobs:
         run: yarn build
       - name: Publish to GitHub Package Registry
         run: |
-          yarn lerna publish patch \
+          yarn lerna publish major \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
