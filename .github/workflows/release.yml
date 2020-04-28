@@ -50,9 +50,9 @@ jobs:
       - name: GCP download
         run: |
           if [ "${{ github.head_ref }}" == "master" ]; then
-            gsutil cp gs://$BUCKET_NAME/log.txt .
+            gsutil cp gs://$BUCKET_NAME/test/log.txt .
           else
-            gsutil cp gs://$BUCKET_NAME/${{ github.head_ref }}/log.txt .
+            gsutil cp gs://$BUCKET_NAME/test/${{ github.head_ref }}/log.txt .
           fi
       - name: Read log.txt
         id: log
