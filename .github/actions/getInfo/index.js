@@ -2,7 +2,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 
 function getChangeLogEntry() {
-  const changes = [];
+  const changes = {};
 
   switch (github.context.eventName) {
     case "pull_request": {
@@ -15,13 +15,11 @@ function getChangeLogEntry() {
           github.context.payload.pull_request.body &&
           github.context.payload.pull_request.body.indexOf("Change log:") > -1
         ) {
-          let change = github.context.payload.pull_request.title;
-          const logEntry = github.context.payload.pull_request.body.split(
+          changes["title"] = github.context.payload.pull_request.title;
+          changes["logEntry"] = github.context.payload.pull_request.body.split(
             "Change log:"
           )[1];
-          change = change.concat("\n", logEntry);
-          changes.push(change);
-          core.info(changes.toString());
+          core.info(JSON.stringify(changes));
         } else {
           throw new Error(`No change log entry found in PR description.`);
         }
@@ -39,7 +37,7 @@ function getChangeLogEntry() {
 }
 
 try {
-  core.setOutput("changes", getChangeLogEntry().toString());
+  core.setOutput("changes", JSON.stringify(getChangeLogEntry()));
 } catch (error) {
   core.error(error.toString());
   core.setFailed(error.change.toString());
