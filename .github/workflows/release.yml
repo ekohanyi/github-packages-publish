@@ -96,7 +96,7 @@ jobs:
         run: yarn build
       - name: Publish to GitHub Package Registry
         run: |
-          yarn lerna publish minor \
+          yarn lerna publish patch \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
