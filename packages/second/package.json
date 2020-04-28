@@ -1,11 +1,11 @@
 {
-  "name": "@ekohanyi/core",
+  "name": "@ekohanyi/second",
   "version": "2.3.1",
   "main": "index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/ekohanyi/github-packages-publish.git",
-    "directory": "packages/core"
+    "directory": "packages/second"
   }
 }
