@@ -96,11 +96,17 @@ jobs:
       - name: Build
         run: yarn build
       - name: Publish to GitHub Package Registry
+        # run: |
+        #   yarn lerna publish minor \
+        #   --registry "https://npm.pkg.github.com/" \
+        #   --yes \
+        #   --no-verify-access \
         run: |
-          yarn lerna publish minor \
+          yarn lerna publish \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
-          --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
+          --conventional-commits \
+          --no-changelog
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
