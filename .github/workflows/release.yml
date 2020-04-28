@@ -6,7 +6,7 @@ name: Release
 # events but only for the master branch
 on:
   push:
-    branches: [master, release]
+    branches: [master]
 
 env:
   NODE_VERSION: 13.3.0
@@ -64,7 +64,6 @@ jobs:
   publish:
     name: Publish Lerna Packages
     needs: [install]
-    if: github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -96,17 +95,17 @@ jobs:
       - name: Build
         run: yarn build
       - name: Publish to GitHub Package Registry
-        # run: |
-        #   yarn lerna publish minor \
-        #   --registry "https://npm.pkg.github.com/" \
-        #   --yes \
-        #   --no-verify-access \
         run: |
-          yarn lerna publish \
+          yarn lerna publish minor \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
-          --conventional-commits \
-          --no-changelog
+        # run: |
+        #   yarn lerna publish \
+        #   --registry "https://npm.pkg.github.com/" \
+        #   --yes \
+        #   --no-verify-access \
+        #   --conventional-commits \
+        #   --no-changelog
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
