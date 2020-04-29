@@ -60,7 +60,7 @@ jobs:
 
   publish:
     name: Publish Lerna Packages
-    needs: [install]
+    needs: [install, download]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
