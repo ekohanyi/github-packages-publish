@@ -96,15 +96,17 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: change-log
-      - name: Read log.txt
-        id: log
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: change-log/log.txt
-      - name: Echo log.txt
-        run: echo ${{ steps.log.outputs.content }}
-      - name: Get changed lerna packages
-        run: yarn lerna changed --json
+      # - name: Read log.txt
+      #   id: log
+      #   uses: juliangruber/read-file-action@v1
+      #   with:
+      #     path: change-log/log.txt
+      # - name: Echo log.txt
+      #   run: echo ${{ steps.log.outputs.content }}
+      - name: Get version
+        run: |
+          value=`cat change-log/log.txt | jq '.bump'`
+          echo The result is $value
       - name: Publish to GitHub Package Registry
         run: |
           yarn lerna publish patch \
