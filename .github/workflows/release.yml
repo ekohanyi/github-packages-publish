@@ -96,11 +96,11 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: change-log
-      # - name: Read log.txt
-      #   id: log
-      #   uses: juliangruber/read-file-action@v1
-      #   with:
-      #     path: ./log.txt
+      - name: Read log.txt
+        id: log
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: change-log/log.txt
       - name: Echo log.txt
         shell: bash
         run: |
