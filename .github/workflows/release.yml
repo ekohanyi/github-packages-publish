@@ -102,10 +102,10 @@ jobs:
       #   with:
       #     path: ./log.txt
       - name: Echo log.txt
-          shell: bash
-          run: |
-            value=`cat change-log/log.txt`
-            echo The result is $value
+        shell: bash
+        run: |
+          value=`cat change-log/log.txt`
+          echo The result is $value
       - name: Publish to GitHub Package Registry
         run: |
           yarn lerna publish patch \
