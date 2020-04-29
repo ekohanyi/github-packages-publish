@@ -16,6 +16,9 @@ function getChangeLogEntry() {
           github.context.payload.pull_request.body.indexOf("Change log:") > -1
         ) {
           changes["title"] = github.context.payload.pull_request.title;
+          changes["bump"] = github.context.payload.pull_request.title.match(
+            /\[(.*?)\]/
+          )[1];
           changes["logEntry"] = github.context.payload.pull_request.body.split(
             "Change log:"
           )[1];
