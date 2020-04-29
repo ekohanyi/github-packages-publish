@@ -19,3 +19,5 @@ console.log("major change indie");
 console.log("minor change indie");
 
 console.log("change change change");
+
+console.log("there was a change");
