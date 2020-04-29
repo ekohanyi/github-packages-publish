@@ -105,7 +105,7 @@ jobs:
       #   run: echo ${{ steps.log.outputs.content }}
       - name: Get version
         run: |
-          value=`cat change-log/log.txt | jq '.bump'`
+          value=$(change-log/log.txt | jq -r '.bump')
           echo The result is $value
       - name: Publish to GitHub Package Registry
         run: |
