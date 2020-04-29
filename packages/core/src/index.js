@@ -17,3 +17,5 @@ console.log("i changed on both packages");
 console.log("major change indie");
 
 console.log("minor change indie");
+
+console.log("change change change");

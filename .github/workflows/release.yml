@@ -111,7 +111,6 @@ jobs:
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
-          --force-publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get changed lerna packages
