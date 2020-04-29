@@ -49,11 +49,7 @@ jobs:
           export_default_credentials: true
       - name: GCP download
         run: |
-          if [ "${{ github.head_ref }}" == "master" ]; then
-            gsutil cp gs://$BUCKET_NAME/test/log.txt .
-          else
-            gsutil cp gs://$BUCKET_NAME/test/${{ github.head_ref }}/log.txt .
-          fi
+          gsutil cp gs://$BUCKET_NAME/branch/test/log.txt .
       - name: Read log.txt
         id: log
         uses: juliangruber/read-file-action@v1
