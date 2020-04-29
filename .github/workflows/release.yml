@@ -50,13 +50,10 @@ jobs:
       - name: GCP download
         run: |
           gsutil cp gs://$BUCKET_NAME/test/branch/log.txt .
-      - name: Read log.txt
-        id: log
-        uses: juliangruber/read-file-action@v1
+      - uses: actions/upload-artifact@v1
         with:
-          path: ./log.txt
-      - name: Echo log.txt
-        run: echo ${{ steps.log.outputs.content }}
+          name: change-log
+          path: .github/log.txt
 
   publish:
     name: Publish Lerna Packages
@@ -96,6 +93,9 @@ jobs:
         run: yarn
       - name: Build
         run: yarn build
+      - uses: actions/download-artifact@v1
+        with:
+          name: change-log
       - name: Read log.txt
         id: log
         uses: juliangruber/read-file-action@v1
