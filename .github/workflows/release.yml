@@ -103,6 +103,8 @@ jobs:
           path: change-log/log.txt
       - name: Echo log.txt
         run: echo ${{ steps.log.outputs.content }}
+      - name: Get changed lerna packages
+        run: yarn lerna changed --json
       - name: Publish to GitHub Package Registry
         run: |
           yarn lerna publish patch \
