@@ -53,7 +53,7 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: change-log
-          path: .github/log.txt
+          path: ./log.txt
 
   publish:
     name: Publish Lerna Packages
