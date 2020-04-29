@@ -96,11 +96,19 @@ jobs:
         run: yarn
       - name: Build
         run: yarn build
+      - name: Read log.txt
+        id: log
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./log.txt
+      - name: Echo log.txt
+        run: echo ${{ steps.log.outputs.content }}
       - name: Publish to GitHub Package Registry
         run: |
           yarn lerna publish patch \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
+          --force-publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
