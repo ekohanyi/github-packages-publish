@@ -96,13 +96,13 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: change-log
-      - name: Read log.txt
-        id: log
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./log.txt
+      # - name: Read log.txt
+      #   id: log
+      #   uses: juliangruber/read-file-action@v1
+      #   with:
+      #     path: ./log.txt
       - name: Echo log.txt
-        run: echo ${{ steps.log.outputs.content }}
+        run: echo ${{ change-log }}
       - name: Publish to GitHub Package Registry
         run: |
           yarn lerna publish patch \
