@@ -100,7 +100,7 @@ jobs:
         id: log
         uses: juliangruber/read-file-action@v1
         with:
-          path: .change-log/log.txt
+          path: change-log/log.txt
       - name: Echo log.txt
         run: echo ${{ steps.log.outputs.content }}
       - name: Publish to GitHub Package Registry
