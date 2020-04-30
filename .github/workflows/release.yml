@@ -119,5 +119,3 @@ jobs:
           --no-verify-access \
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get changed lerna packages
-        run: yarn lerna changed --json
