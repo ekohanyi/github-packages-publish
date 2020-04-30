@@ -96,13 +96,6 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: change-log
-      # - name: Read log.txt
-      #   id: log
-      #   uses: juliangruber/read-file-action@v1
-      #   with:
-      #     path: change-log/log.txt
-      # - name: Echo log.txt
-      #   run: echo ${{ steps.log.outputs.content }}
       - name: Get version
         id: version
         run: |
@@ -112,10 +105,31 @@ jobs:
       - name: Publish to GitHub Package Registry
         run: |
           git reset --hard master
-          git status
           yarn lerna publish ${{ steps.version.outputs.version }} \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
+          --force-publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  fun_with_tags:
+    name: Fun with tags
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # pulls all commits (needed for lerna / semantic release to correctly version)
+          fetch-depth: "0"
+      # pulls all tags (needed for lerna / semantic release to correctly version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Configure CI Git User
+        run: |
+          git config --global user.name 'ekohanyi'
+          git config --global user.email 'emmajk2012@gmail.com'
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get tags
+        run: git describe --tags
