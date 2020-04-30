@@ -133,6 +133,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get packages that changed
         run: |
+          git pull
           commit=$(echo `git log --format="%H" -n 1`)
           echo $commit
           echo $(git ls-remote --tags | grep $commit)
