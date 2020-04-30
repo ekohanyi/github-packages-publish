@@ -111,7 +111,7 @@ jobs:
           echo ::set-output name=version::${value}
       - name: Publish to GitHub Package Registry
         run: |
-          git reset --hard head
+          rm -rf /change-log
           yarn lerna publish ${{ steps.version.outputs.version }} \
           --registry "https://npm.pkg.github.com/" \
           --yes \
