@@ -123,7 +123,7 @@ jobs:
           # pulls all commits (needed for lerna / semantic release to correctly version)
           fetch-depth: "0"
       # pulls all tags (needed for lerna / semantic release to correctly version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - run: git fetch --depth=1 origin
       - name: Configure CI Git User
         run: |
           git config --global user.name 'ekohanyi'
@@ -133,7 +133,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get packages that changed
         run: |
-          git rev-parse head
+          git log -n 1 --pretty=format:"%H"  
           commit=$(echo `git log --format="%H" -n 1`)
           echo $commit
           echo $(git ls-remote --tags | grep $commit)
