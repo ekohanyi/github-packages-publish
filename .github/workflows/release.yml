@@ -134,4 +134,5 @@ jobs:
       - name: Get packages that changed
         run: |
           commit=$(echo `git log --format="%H" -n 1`)
+          echo $commit
           git ls-remote --tags | grep $commit
