@@ -109,7 +109,8 @@ jobs:
           echo The result is $value
       - name: Publish to GitHub Package Registry
         run: |
-          yarn lerna publish patch \
+          git status
+          yarn lerna publish $value \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
