@@ -131,5 +131,7 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get tags
-        run: git describe --tags
+      - name: Get packages that changed
+        run: |
+          commit=$(echo `git log --format="%H" -n 1`)
+          git ls-remote --tags | grep $commit
