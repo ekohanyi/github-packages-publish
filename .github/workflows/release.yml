@@ -112,6 +112,7 @@ jobs:
       - name: Publish to GitHub Package Registry
         run: |
           rm -rf /change-log
+          git status
           yarn lerna publish ${{ steps.version.outputs.version }} \
           --registry "https://npm.pkg.github.com/" \
           --yes \
