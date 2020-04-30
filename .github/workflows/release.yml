@@ -104,13 +104,15 @@ jobs:
       # - name: Echo log.txt
       #   run: echo ${{ steps.log.outputs.content }}
       - name: Get version
+        id: version
         run: |
           value=$(cat change-log/log.txt | jq -r .bump)
           echo The result is $value
+          echo ::set-output name=version::${value}
       - name: Publish to GitHub Package Registry
         run: |
           git status
-          yarn lerna publish $value \
+          yarn lerna publish ${{ steps.version.outputs.version }} \
           --registry "https://npm.pkg.github.com/" \
           --yes \
           --no-verify-access \
