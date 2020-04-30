@@ -96,16 +96,16 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: change-log
-      # - name: Read log.txt
-      #   id: log
-      #   uses: juliangruber/read-file-action@v1
-      #   with:
-      #     path: change-log/log.txt
-      # - name: Echo log.txt
-      #   run: echo ${{ steps.log.outputs.content }}
+      - name: Read log.txt
+        id: log
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: change-log/log.txt
+      - name: Echo log.txt
+        run: echo ${{ steps.log.outputs.content }}
       - name: Get version
         run: |
-          value=`$(change-log/log.txt | jq -r '.bump')`
+          value=`$(steps.log.outputs.content | jq -r '.bump')`
           echo The result is $value
       - name: Publish to GitHub Package Registry
         run: |
