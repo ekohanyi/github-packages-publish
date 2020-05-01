@@ -1,13 +1,12 @@
-import { Context } from "@actions/github/lib/context";
-import { GitHub } from "@actions/github";
-import * as core from "@actions/core";
+const core = require("@actions/core");
+const github = require("@actions/github");
 
-const getByTag = tag =>
-  this.git.repos.getReleaseByTag({
-    owner: this.context.repo.owner,
-    repo: this.context.repo.repo,
-    tag: tag
-  });
+// const getByTag = tag =>
+//   github.repos.getReleaseByTag({
+//     owner: this.context.repo.owner,
+//     repo: this.context.repo.repo,
+//     tag: tag
+//   });
 
 try {
   const rawTags = core.getInput("tags");
