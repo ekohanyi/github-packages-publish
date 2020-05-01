@@ -132,7 +132,8 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get latest
+      - name: Get pushed tags
+        id: get_tags
         run: |
           commit=$(echo `git log --format="%H" -n 1`)
           echo $commit
@@ -144,5 +145,9 @@ jobs:
             tag=${tag%"^{}"}
             tags+=("${tag}") 
           done
-          echo ${tags[0]}
-          echo ${tags[1]}
+          echo ::set-output name=tags::${tags}
+      - name: Push release descriptions
+        uses: ./.github/actions/updateRelease # Uses an action in the root directory
+        id: release
+        with:
+          tags: ${{ steps.get_tags.outputs.tags }}

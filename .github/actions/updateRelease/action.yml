@@ -1,0 +1,13 @@
+name: "Update Release"
+description: "Update release from PR description"
+inputs:
+  tags: # id of input, no input
+    description: "Array of tags to update"
+    required: true
+    default: ""
+outputs:
+  status: # id of output
+    description: "Did it work or nah"
+runs:
+  using: "node12"
+  main: "index.js"
