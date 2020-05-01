@@ -136,4 +136,13 @@ jobs:
         run: |
           commit=$(echo `git log --format="%H" -n 1`)
           echo $commit
-          echo $(git ls-remote --tags | grep $commit)
+          all_tags=$(git ls-remote --tags | grep $commit)
+          array=($(echo $all_tags))
+          tags=()
+          for (( index=1; index<${#array[@]}; index+=2 )); do 
+            tag=${array[index]#"refs/tags/"}
+            tag=${tag%"^{}"}
+            tags+=("${tag}") 
+          done
+          echo ${tags[0]}
+          echo ${tags[1]}
