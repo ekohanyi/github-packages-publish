@@ -112,27 +112,25 @@ jobs:
           --force-publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  # fun_with_tags:
-  #   name: Fun with tags
-  #   needs: [publish]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         # pulls all commits (needed for lerna / semantic release to correctly version)
-  #         fetch-depth: "0"
-  #     # pulls all tags (needed for lerna / semantic release to correctly version)
-  #     - run: git fetch --depth=1 origin
-  #     - name: Configure CI Git User
-  #       run: |
-  #         git config --global user.name 'ekohanyi'
-  #         git config --global user.email 'emmajk2012@gmail.com'
-  #         git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     - name: Get packages that changed
-  #       run: |
-  #         git log -n 1 --pretty=format:"%H"
-  #         commit=$(echo `git log --format="%H" -n 1`)
-  #         echo $commit
-  #         echo $(git ls-remote --tags | grep $commit)
+
+  fun_with_tags:
+    name: Fun with tags
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # pulls all commits (needed for lerna / semantic release to correctly version)
+          fetch-depth: "0"
+      # pulls all tags (needed for lerna / semantic release to correctly version)
+      - run: git fetch --depth=1 origin
+      - name: Configure CI Git User
+        run: |
+          git config --global user.name 'ekohanyi'
+          git config --global user.email 'emmajk2012@gmail.com'
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get context
+        run: |
+          echo ${{ github }}
