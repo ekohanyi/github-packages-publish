@@ -2,7 +2,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 
 const getByTag = (git, tag) =>
-  git.GitHub.repos.getReleaseByTag({
+  git.repos.getReleaseByTag({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     tag: tag
