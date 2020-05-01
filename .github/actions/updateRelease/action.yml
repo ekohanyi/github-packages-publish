@@ -5,6 +5,10 @@ inputs:
     description: "Array of tags to update"
     required: true
     default: ""
+  token:
+    description: "github token"
+    required: true
+    default: ""
 outputs:
   status: # id of output
     description: "Did it work or nah"

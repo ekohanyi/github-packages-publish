@@ -152,3 +152,4 @@ jobs:
         id: release
         with:
           tags: ${{ steps.get_tags.outputs.tags }}
+          token: ${{ secrets.GITHUB_TOKEN }}
