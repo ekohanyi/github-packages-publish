@@ -132,9 +132,8 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Get latest
-        run: git rev-parse HEAD
+        run: |
+          commit=$(echo `git log --format="%H" -n 1`)
+          echo $commit
+          echo $(git ls-remote --tags | grep $commit)
