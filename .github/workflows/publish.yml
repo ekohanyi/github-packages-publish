@@ -122,6 +122,7 @@ jobs:
         with:
           # pulls all commits (needed for lerna / semantic release to correctly version)
           fetch-depth: "0"
+          ref: "master"
       # pulls all tags (needed for lerna / semantic release to correctly version)
       - run: git fetch --depth=1 origin
       - name: Configure CI Git User
@@ -135,3 +136,5 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+      - name: Get latest
+        run: git rev-parse HEAD
