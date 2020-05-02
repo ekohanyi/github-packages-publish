@@ -20,7 +20,17 @@ try {
   core.info(tags.toString());
   const git = new github.GitHub(token);
 
-  core.info(JSON.stringify(getByTag(git, tags[0])));
+  core.info(
+    JSON.stringify(
+      getByTag(git, tags[0]).then(
+        data => {
+          console.log(data);
+          return data;
+        },
+        error => console.log(error)
+      )
+    )
+  );
 } catch (error) {
   core.error(error.toString());
   core.setFailed(error.change.toString());
