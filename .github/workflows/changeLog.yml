@@ -66,11 +66,11 @@ jobs:
       # Use the output from the `changeLog` step
       - name: Write changes to file
         run: |
-          echo "${{ steps.changeLog.outputs.changes }}" > .github/log.txt
+          echo "${{ steps.changeLog.outputs.changes }}" > .github/log.json
       - uses: actions/upload-artifact@v1
         with:
           name: change-log
-          path: .github/log.txt
+          path: .github/log.json
 
   upload:
     name: Upload Change Log to GCP
