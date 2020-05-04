@@ -22,7 +22,7 @@ function getChangeLogEntry() {
           changes["logEntry"] = github.context.payload.pull_request.body.split(
             "Change log:"
           )[1];
-          core.info(JSON.stringify(changes));
+          // core.info(JSON.stringify(changes));
         } else {
           throw new Error(`No change log entry found in PR description.`);
         }
@@ -36,11 +36,12 @@ function getChangeLogEntry() {
     }
   }
 
-  return changes;
+  console.log(JSON.stringify(changes));
+  return JSON.stringify(changes);
 }
 
 try {
-  core.setOutput("changes", JSON.stringify(getChangeLogEntry()));
+  core.setOutput("changes", getChangeLogEntry());
 } catch (error) {
   core.error(error.toString());
   core.setFailed(error.change.toString());
