@@ -156,4 +156,4 @@ jobs:
         with:
           tags: ${{ steps.get_tags.outputs.tags }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          changes: cat change-log/log.json
+          changes: ${{ cat change-log/log.json }}
