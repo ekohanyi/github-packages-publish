@@ -13,10 +13,10 @@ const getByTag = (git, tag) => {
   });
 };
 
-const createRelease = (git, tag, name, body) => {
+const createRelease = (git, tag, body) => {
   return git.repos.createRelease({
     body: body,
-    name: name,
+    name: tag,
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     tag_name: tag
@@ -30,15 +30,17 @@ try {
   core.info(tags.toString());
   const git = new github.GitHub(token);
 
-  core.info(
-    JSON.stringify(
-      createRelease(git, tags[0], "hello", "this is the body text").then(
-        data => {
-          console.log(JSON.stringify(data));
-        },
-        error => {
-          console.log(JSON.stringify(error));
-        }
+  tags.forEach(tag =>
+    core.info(
+      JSON.stringify(
+        createRelease(git, tag, "this is the body text").then(
+          data => {
+            console.log(JSON.stringify(data));
+          },
+          error => {
+            console.log(JSON.stringify(error));
+          }
+        )
       )
     )
   );
