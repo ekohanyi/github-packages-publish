@@ -36,8 +36,8 @@ function getChangeLogEntry() {
     }
   }
 
-  console.log(JSON.stringify(changes).replace(/"/gi, '/"'));
-  return JSON.stringify(changes).replace(/"/gi, '/"');
+  console.log(JSON.stringify(changes).replace(/"/gi, '\\"'));
+  return JSON.stringify(changes).replace(/"/gi, '\\"');
 }
 
 try {
