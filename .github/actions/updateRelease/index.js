@@ -17,6 +17,7 @@ const createRelease = (git, tag, name, body) => {
   return git.repos.createRelease({
     body: body,
     name: name,
+    owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     tag_name: tag
   });
