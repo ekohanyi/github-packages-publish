@@ -49,11 +49,11 @@ jobs:
           export_default_credentials: true
       - name: GCP download
         run: |
-          gsutil cp gs://$BUCKET_NAME/test/bump/log.txt .
+          gsutil cp gs://$BUCKET_NAME/test/generate/log.json .
       - uses: actions/upload-artifact@v1
         with:
           name: change-log
-          path: ./log.txt
+          path: ./log.json
 
   publish:
     name: Publish Lerna Packages
@@ -99,7 +99,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-          value=$(cat change-log/log.txt | jq -r .bump)
+          value=$(cat change-log/log.json | jq -r .bump)
           echo The result is $value
           echo ::set-output name=version::${value}
       - name: Publish to GitHub Package Registry
@@ -147,9 +147,13 @@ jobs:
           done
           stringTags=$( IFS=$', '; echo "${tags[*]}" )
           echo ::set-output name=tags::${stringTags}
+      - uses: actions/download-artifact@v1
+        with:
+          name: change-log
       - name: Push release descriptions
         uses: ./.github/actions/updateRelease # Uses an action in the root directory
         id: release
         with:
           tags: ${{ steps.get_tags.outputs.tags }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          changes: $(cat change-log/log.json | jq -r)
