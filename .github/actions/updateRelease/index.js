@@ -13,6 +13,15 @@ const getByTag = (git, tag) => {
   });
 };
 
+const createRelease = (git, tag, name, body) => {
+  return git.repos.createRelease({
+    body: body,
+    name: name,
+    repo: github.context.repo.repo,
+    tag_name: tag
+  });
+};
+
 try {
   const tags = core.getInput("tags").split(",");
   const token = core.getInput("token");
@@ -27,7 +36,16 @@ try {
           console.log(data);
           return data;
         },
-        error => console.log(error)
+        () => {
+          createRelease(git, tags[0], "hello", "this is the body text").then(
+            data => {
+              console.log(JSON.stringify(data));
+            },
+            error => {
+              console.log(JSON.stringify(error));
+            }
+          );
+        }
       )
     )
   );

@@ -146,7 +146,7 @@ jobs:
             tags+=("${tag}") 
           done
           stringTags=$( IFS=$', '; echo "${tags[*]}" )
-          echo ::set-output name=tags::${stringTags}
+          echo ::set-output name=tags::${stringTags)
       - name: Push release descriptions
         uses: ./.github/actions/updateRelease # Uses an action in the root directory
         id: release
