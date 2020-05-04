@@ -31,20 +31,12 @@ try {
 
   core.info(
     JSON.stringify(
-      getByTag(git, tags[0]).then(
+      createRelease(git, tags[0], "hello", "this is the body text").then(
         data => {
-          console.log(data);
-          return data;
+          console.log(JSON.stringify(data));
         },
-        () => {
-          createRelease(git, tags[0], "hello", "this is the body text").then(
-            data => {
-              console.log(JSON.stringify(data));
-            },
-            error => {
-              console.log(JSON.stringify(error));
-            }
-          );
+        error => {
+          console.log(JSON.stringify(error));
         }
       )
     )
