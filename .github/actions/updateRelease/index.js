@@ -31,7 +31,12 @@ try {
 
   core.info(
     JSON.stringify(
-      createRelease(git, tags[0], "hello", "this is the body text").then(
+      createRelease(
+        git,
+        encodeURIComponent(tags[0]),
+        "hello",
+        "this is the body text"
+      ).then(
         data => {
           console.log(JSON.stringify(data));
         },
