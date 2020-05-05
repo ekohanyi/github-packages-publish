@@ -7,3 +7,5 @@ console.log("major");
 console.log("major");
 
 console.log("major again again");
+
+console.log("whatuppp");
