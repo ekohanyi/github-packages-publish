@@ -13,6 +13,7 @@ env:
   NODE_VERSION: 13.3.0
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   PROJECT_ID: good-ui
+  BRANCH_ID: ${{ github.event.commits[0].id }}
 
 jobs:
   install:
@@ -53,7 +54,7 @@ jobs:
           export_default_credentials: true
       - name: GCP download
         run: |
-          gsutil cp gs://$BUCKET_NAME/test/generate/log.json .
+          gsutil cp gs://$BUCKET_NAME/test/$BRANCH_ID/log.json .
       - uses: actions/upload-artifact@v1
         with:
           name: change-log

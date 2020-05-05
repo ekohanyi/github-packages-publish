@@ -18,6 +18,7 @@ env:
   NODE_VERSION: 13.3.0
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   PROJECT_ID: good-ui
+  BRANCH_ID: ${{ github.event.head.sha }}
 
 jobs:
   install:
@@ -96,5 +97,5 @@ jobs:
           if [ "${{ github.head_ref }}" == "master" ]; then
             gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/test/
           else
-            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/test/${{ github.head_ref }}
+            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/test/$BRANCH_ID
           fi
