@@ -34,6 +34,9 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install
         run: yarn
+      - uses: dtothefp/actions-ci-env@master
+      # Use branch name for whatever purpose
+      - run: echo ${BRANCH_NAME}
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
