@@ -18,6 +18,7 @@ env:
   NODE_VERSION: 13.3.0
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   PROJECT_ID: good-ui
+  BRANCH_ID: ${{ github.event.pull_request.head.sha }}
 
 jobs:
   install:
@@ -41,9 +42,8 @@ jobs:
         run: yarn
       - name: Dump GitHub context
         env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+          GITHUB_CONTEXT: ${{ toJson(github.event) }}
         run: echo "$GITHUB_CONTEXT"
-
   change_log:
     runs-on: ubuntu-latest
     name: Get changes from PR
@@ -75,7 +75,6 @@ jobs:
         with:
           name: change-log
           path: .github/log.json
-
   upload:
     name: Upload Change Log to GCP
     runs-on: ubuntu-latest
@@ -91,10 +90,11 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: change-log
+      - run: echo "$BRANCH_ID"
       - name: GCP Upload
         run: |
           if [ "${{ github.head_ref }}" == "master" ]; then
             gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/test/
           else
-            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/test/${{ github.head_ref }}
+            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/test/$BRANCH_ID
           fi
