@@ -18,7 +18,7 @@ env:
   NODE_VERSION: 13.3.0
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   PROJECT_ID: good-ui
-  BRANCH_ID: ${{ github.event.head.sha }}
+  BRANCH_ID: ${{ github.event.pull_request.head.sha }}
 
 jobs:
   install:
