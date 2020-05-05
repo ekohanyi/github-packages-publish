@@ -6,13 +6,8 @@ function getLogEntries(log) {
   let entries = {};
   changes.forEach(c => {
     const split = c.split("\r\n");
-    const title = split[0];
-    const entry = {
-      title: title,
-      log: "\r\n" + split.slice(1).join("\r\n")
-    };
 
-    entries[title] = entry;
+    entries[split[0]] = "\r\n" + split.slice(1).join("\r\n");
   });
 
   return entries;
