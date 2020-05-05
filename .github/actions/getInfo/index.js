@@ -2,7 +2,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 
 function getLogEntries(log) {
-  const changes = log.logEntry.split("\r\n\r\n");
+  const changes = log.split("\r\n\r\n");
   let entries = {};
   changes.forEach(c => {
     const split = c.split("\r\n");
