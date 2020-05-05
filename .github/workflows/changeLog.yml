@@ -92,6 +92,8 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: change-log
+      - run: echo $BRANCH_ID
+      - run: echo ${{ github.event.head.sha }}
       - name: GCP Upload
         run: |
           if [ "${{ github.head_ref }}" == "master" ]; then
