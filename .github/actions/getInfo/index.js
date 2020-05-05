@@ -22,7 +22,6 @@ function getChangeLogEntry() {
           changes["logEntry"] = github.context.payload.pull_request.body.split(
             "Change log:"
           )[1];
-          // core.info(JSON.stringify(changes));
         } else {
           throw new Error(`No change log entry found in PR description.`);
         }
@@ -36,7 +35,7 @@ function getChangeLogEntry() {
     }
   }
 
-  console.log(JSON.stringify(changes).replace(/"/gi, '\\"'));
+  // escape quotes before sending back to action
   return JSON.stringify(changes).replace(/"/gi, '\\"');
 }
 

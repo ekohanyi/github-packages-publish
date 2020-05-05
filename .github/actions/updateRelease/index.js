@@ -26,6 +26,9 @@ const createRelease = (git, tag, body) => {
 try {
   const tags = core.getInput("tags").split(",");
   const token = core.getInput("token");
+  const changesRaw = core.getInput("changes");
+  console.log(changesRaw);
+  const changes = JSON.parse(changesRaw);
   console.log(token);
   core.info(tags.toString());
   const git = new github.GitHub(token);
@@ -33,7 +36,7 @@ try {
   tags.forEach(tag =>
     core.info(
       JSON.stringify(
-        createRelease(git, tag, "this is the body text").then(
+        createRelease(git, tag, changes.logEntry).then(
           data => {
             console.log(JSON.stringify(data));
           },

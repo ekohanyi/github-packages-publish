@@ -9,6 +9,10 @@ inputs:
     description: "github token"
     required: true
     default: ""
+  changes:
+    description: "changes"
+    required: true
+    default: ""
 outputs:
   status: # id of output
     description: "Did it work or nah"
