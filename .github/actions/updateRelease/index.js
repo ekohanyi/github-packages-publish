@@ -1,21 +1,22 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 
-const getByTag = (git, tag) => {
-  console.log(git.repos.getReleaseByTag);
-  console.log(tag);
-  console.log(github.context.repo.owner);
-  console.log(github.context.repo.repo);
-  return git.repos.getReleaseByTag({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    tag: tag
-  });
-};
+// const getByTag = (git, tag) => {
+//   console.log(git.repos.getReleaseByTag);
+//   console.log(tag);
+//   console.log(github.context.repo.owner);
+//   console.log(github.context.repo.repo);
+//   return git.repos.getReleaseByTag({
+//     owner: github.context.repo.owner,
+//     repo: github.context.repo.repo,
+//     tag: tag
+//   });
+// };
 
-const createRelease = (git, tag, body) => {
+const createRelease = (git, tag, logs) => {
+  console.log(logs);
   return git.repos.createRelease({
-    body: body,
+    body: "sup",
     name: tag,
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
@@ -36,7 +37,7 @@ try {
   tags.forEach(tag =>
     core.info(
       JSON.stringify(
-        createRelease(git, tag, changes.logEntry).then(
+        createRelease(git, tag, changes.logEntries).then(
           data => {
             console.log(JSON.stringify(data));
           },
