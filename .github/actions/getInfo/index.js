@@ -37,7 +37,7 @@ function getChangeLog() {
             /\[(.*?)\]/
           )[1];
           changes["logEntries"] = getLogEntries(
-            github.context.payload.pull_request.body.split("Change log:")[1]
+            github.context.payload.pull_request.body.split("Change log:\r\n")[1]
           );
         } else {
           throw new Error(`No change log entry found in PR description.`);
