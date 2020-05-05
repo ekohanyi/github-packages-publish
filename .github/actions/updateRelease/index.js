@@ -15,8 +15,9 @@ const github = require("@actions/github");
 
 const createRelease = (git, tag, logs) => {
   console.log(logs);
+  const package = Object.keys(logs).filter(t => tag.indexOf(t) > -1)[0];
   return git.repos.createRelease({
-    body: "sup",
+    body: logs[package],
     name: tag,
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
