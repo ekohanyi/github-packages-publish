@@ -39,6 +39,10 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install
         run: yarn
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
   change_log:
     runs-on: ubuntu-latest
