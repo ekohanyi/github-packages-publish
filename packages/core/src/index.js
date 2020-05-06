@@ -25,3 +25,5 @@ console.log("there was a change");
 console.log("oh yeah i should change something");
 
 console.log("what do the actions say");
+
+console.log("what happens with squash");
