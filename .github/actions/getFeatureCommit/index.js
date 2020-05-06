@@ -6,7 +6,7 @@ function getCommitHash() {
 
   switch (github.context.eventName) {
     case "push": {
-      console.log(github.context);
+      console.log(github.context.payload.commits);
       return "0";
     }
     default: {
