@@ -14,7 +14,6 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   PROJECT_ID: good-ui
   # BRANCH_ID: ${{ github.event.commits[${#github.event.commits[@]}-1]}}
-  COMMITS: ${{ github.event.commits }}
 
 jobs:
   install:
@@ -36,8 +35,10 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install
         run: yarn
-      - name: Get commit hash
-        uses: ./.github/actions/getFeatureCommit
+      - name: Get commit ID
+        uses: ./.github/actions/getFeatureCommit # Uses an action in the root directory
+        id: commit
+      - run: echo "${{ steps.commit.outputs.commit_hash }}"
   # download:
   #   name: Grab Change Log from GCP
   #   runs-on: ubuntu-latest
