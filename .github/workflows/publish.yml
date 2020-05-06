@@ -39,7 +39,7 @@ jobs:
       - name: Get commit ID
         env:
           EVT: ${{ toJson(github.event) }}
-        run: jq '.' <<< "$EVT"
+        run: jq '.commits' '.[0]' '.id' <<< "$EVT"
   # download:
   #   name: Grab Change Log from GCP
   #   runs-on: ubuntu-latest
