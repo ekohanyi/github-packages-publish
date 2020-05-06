@@ -38,8 +38,8 @@ jobs:
         run: yarn
       - name: Get commit ID
         env:
-          COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo $COMMITS[0] | jq -r '.[]'
+          EVT: ${{ toJson(github.event) }}
+        run: jq '.' <<< "$EVT"
   # download:
   #   name: Grab Change Log from GCP
   #   runs-on: ubuntu-latest
