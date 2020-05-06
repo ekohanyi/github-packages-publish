@@ -14,7 +14,8 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   PROJECT_ID: good-ui
   # BRANCH_ID: ${{ github.event.commits[${#github.event.commits[@]}-1]}}
-  BRANCH_ID: ${{ github.event.commits[1].id }}
+  COMMITS: ${{ github.event.commits }}
+
 jobs:
   install:
     name: Install Node Dependencies
@@ -35,10 +36,10 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install
         run: yarn
-      - name: Dump GitHub context
+      - name: Get commit ID
         env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+          COMMITS: ${{ toJson(github.event.commits) }}
+        run: echo "$COMMITS"
   # download:
   #   name: Grab Change Log from GCP
   #   runs-on: ubuntu-latest
