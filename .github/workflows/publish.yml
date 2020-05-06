@@ -37,9 +37,7 @@ jobs:
       - name: Install
         run: yarn
       - name: Get commit hash
-          uses: ./.github/actions/getFeatureCommit # Uses an action in the root directory
-          id: commit
-          
+        uses: ./.github/actions/getFeatureCommit
   # download:
   #   name: Grab Change Log from GCP
   #   runs-on: ubuntu-latest
