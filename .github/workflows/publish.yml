@@ -14,7 +14,7 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   PROJECT_ID: good-ui
   # BRANCH_ID: ${{ github.event.commits[${#github.event.commits[@]}-1]}}
-  BRANCH_ID: ${{ github.event.commits[0].id }}
+  BRANCH_ID: ${{ github.event.commits[1].id }}
 jobs:
   install:
     name: Install Node Dependencies
