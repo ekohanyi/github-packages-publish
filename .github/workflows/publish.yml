@@ -39,7 +39,7 @@ jobs:
       - name: Get commit ID
         env:
           COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo "$COMMITS"
+        run: echo ${COMMITS[*]}
   # download:
   #   name: Grab Change Log from GCP
   #   runs-on: ubuntu-latest
