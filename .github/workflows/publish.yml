@@ -43,6 +43,48 @@ jobs:
         uses: ./.github/actions/getFeatureCommit # Uses an action in the root directory
         id: commit
       - run: echo "${{ steps.commit.outputs.commit_hash }}"
+
+  reflog:
+    name: Get reflog
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # pulls all commits (needed for lerna / semantic release to correctly version)
+          fetch-depth: "0"
+      # pulls all tags (needed for lerna / semantic release to correctly version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Configure CI Git User
+        run: |
+          git config --global user.name 'ekohanyi'
+          git config --global user.email 'emmajk2012@gmail.com'
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ekohanyi/github-packages-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@master
+        with:
+          node-version: 13.3.0
+          registry-url: https://npm.pkg.github.com/
+          scope: "@ekohanyi"
+      - name: Restore Cache
+        id: cache-node-modules
+        uses: actions/cache@master
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: yarn
+      - name: Print reflog
+        run: |
+          git reflog
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # download:
   #   name: Grab Change Log from GCP
   #   runs-on: ubuntu-latest
