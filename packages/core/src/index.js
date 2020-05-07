@@ -29,3 +29,5 @@ console.log("what do the actions say");
 console.log("what happens with squash");
 
 console.log("squash that bug");
+
+console.log("lets try a thing");
