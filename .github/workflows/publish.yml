@@ -35,6 +35,10 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install
         run: yarn
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - name: Get commit ID
         uses: ./.github/actions/getFeatureCommit # Uses an action in the root directory
         id: commit
