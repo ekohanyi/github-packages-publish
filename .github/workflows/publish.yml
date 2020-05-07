@@ -82,7 +82,7 @@ jobs:
         run: yarn
       - name: Print reflog
         run: |
-          git reflog
+          git log --all
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # download:
