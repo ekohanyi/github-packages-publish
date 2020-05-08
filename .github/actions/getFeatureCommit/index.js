@@ -23,6 +23,5 @@ function getCommitHash() {
 try {
   core.setOutput("commit_hash", getCommitHash());
 } catch (error) {
-  core.error(error.toString());
   core.setFailed(error.toString());
 }
