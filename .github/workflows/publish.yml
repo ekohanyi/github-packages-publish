@@ -44,6 +44,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: [install]
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Restore Cache
+        uses: actions/cache@master
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install
+        run: yarn
+        run: echo "$GITHUB_CONTEXT"
       - name: Get commit ID
         uses: ./.github/actions/getFeatureCommit # Uses an action in the root directory
         id: commit
