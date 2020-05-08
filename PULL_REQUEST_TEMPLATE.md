@@ -25,14 +25,14 @@ _If a design is part of the task, include a link to the Zeplin(s) here_
 
 - _If applicable, include any links that demonstrate this PR's functionality (Storybook instance, storage bucket, etc)_
 
+**Other Notes**
+
+- _Literally anything else not covered by the above categories. Complaints, suggestions, whatever_
+- _Each note should be a separate list item_
+
 **Change log:**
 @ekohanyi/core
 _Changes made in core_
 
 @ekohanyi/second
 _Changes made in second_
-
-**Other Notes**
-
-- _Literally anything else not covered by the above categories. Complaints, suggestions, whatever_
-- _Each note should be a separate list item_

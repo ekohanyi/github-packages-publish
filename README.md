@@ -3,7 +3,7 @@ todo:
 - [x] clean up file
 - [x] run full flow to make sure it works
 - [x] disable squash merges
-- [ ] add PR template
+- [x] add PR template
 - [ ] clean up workflows
   - [ ] naming
   - [ ] step flows
