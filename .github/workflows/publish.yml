@@ -63,20 +63,21 @@ jobs:
         uses: ./.github/actions/getFeatureCommit # Uses an action in the root directory
         id: commit
       - run: echo "${{ steps.commit.outputs.commit_hash }}"
-      # - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-      #   with:
-      #     version: "285.0.0"
-      #     project_id: "good-ui"
-      #     service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-      #     service_account_key: ${{ secrets.GCP_SA_KEY }}
-      #     export_default_credentials: true
-      # - name: GCP download
-      #   run: |
-      #     gsutil cp gs://$BUCKET_NAME/test/$BRANCH_ID/log.json .
-      # - uses: actions/upload-artifact@v1
-      #   with:
-      #     name: change-log
-      #     path: ./log.json
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: "285.0.0"
+          project_id: "good-ui"
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: GCP download
+        run: |
+          gsutil cp gs://$BUCKET_NAME/test/${{ steps.commit.outputs.commit_hash }}/log.json .
+      - uses: actions/upload-artifact@v1
+        with:
+          name: change-log
+          path: ./log.json
+      - run: cat change-log/log.json
   # publish:
   #   name: Publish Lerna Packages
   #   needs: [install, download]
