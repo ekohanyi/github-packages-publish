@@ -10,24 +10,28 @@ const getTitle = () => {
 };
 
 const getVersionBump = () => {
-  const bump = github.context.payload.pull_request.title
-    .match(/\[(.*?)\]/)[1]
-    .toLowerCase();
+  try {
+    const bump = github.context.payload.pull_request.title
+      .match(/\[(.*?)\]/)[1]
+      .toLowerCase();
 
-  if (bump === "patch" || bump === "minor" || bump === "major") {
-    return bump;
-  } else {
-    throw new Error(
-      `Invalid version bump type ${bump} found in PR title.
+    if (bump === "patch" || bump === "minor" || bump === "major") {
+      return bump;
+    } else {
+      throw new Error(
+        `Invalid version bump type ${bump} found in PR title.
       Version bump type must be "patch", "minor", or "major"`
-    );
+      );
+    }
+  } catch (error) {
+    throw new Error("No version bump keyword found in PR title");
   }
 };
 
 const getLogEntries = log => {
   if (
     github.context.payload.pull_request.body &&
-    github.context.payload.pull_request.body.indexOf("Change log:") > -1
+    github.context.payload.pull_request.body.indexOf("**Change log:**\r\n") > -1
   ) {
     github.context.payload.pull_request.body.split("**Change log:**\r\n")[1];
 
