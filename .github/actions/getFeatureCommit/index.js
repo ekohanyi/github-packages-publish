@@ -25,7 +25,7 @@ const run = () => {
   try {
     core.setOutput("commit_hash", getCommitHash());
   } catch (error) {
-    core.setFailed(error.toString());
+    core.setFailed(error);
   }
 };
 

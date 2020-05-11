@@ -68,7 +68,7 @@ const run = () => {
   try {
     core.setOutput("changes", getChanges());
   } catch (error) {
-    core.setFailed(error.change.toString());
+    core.setFailed(error);
   }
 };
 
