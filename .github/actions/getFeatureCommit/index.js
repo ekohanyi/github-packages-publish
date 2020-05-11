@@ -1,9 +1,9 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 
-function getCommitHash() {
-  switch (github.context.eventName) {
-    case "push": {
+const getCommitHash = () => {
+  if (github.context.eventName === "push") {
+    if (github.context.payload && github.context.payload.commits) {
       const length = github.context.payload.commits.length;
       if (length > 1) {
         // return second to last commit hash
@@ -13,15 +13,20 @@ function getCommitHash() {
           `Commit does not come from a merged PR, no change log exists for it`
         );
       }
+    } else {
+      throw new Error("No commits found in event payload");
     }
-    default: {
-      throw new Error(`Event "${github.context.eventName}" is not supported.`);
-    }
+  } else {
+    throw new Error(`Event "${github.context.eventName}" is not supported.`);
   }
-}
+};
 
-try {
-  core.setOutput("commit_hash", getCommitHash());
-} catch (error) {
-  core.setFailed(error.toString());
-}
+const run = () => {
+  try {
+    core.setOutput("commit_hash", getCommitHash());
+  } catch (error) {
+    core.setFailed(error);
+  }
+};
+
+run();

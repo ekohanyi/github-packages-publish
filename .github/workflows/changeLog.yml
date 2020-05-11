@@ -65,7 +65,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Pull changes from description
-        uses: ./.github/actions/getInfo # Uses an action in the root directory
+        uses: ./.github/actions/getChangeLogs # Uses an action in the root directory
         id: changeLog
       # Use the output from the `changeLog` step
       - name: Write changes to file

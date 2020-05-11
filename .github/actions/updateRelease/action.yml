@@ -1,5 +1,5 @@
 name: "Update Release"
-description: "Update release from PR description"
+description: "Update GitHub Release with change log entries"
 inputs:
   tags: # id of input, no input
     description: "Array of tags to update"
@@ -13,9 +13,6 @@ inputs:
     description: "changes"
     required: true
     default: ""
-outputs:
-  status: # id of output
-    description: "Did it work or nah"
 runs:
   using: "node12"
   main: "index.js"
