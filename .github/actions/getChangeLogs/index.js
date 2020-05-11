@@ -27,22 +27,28 @@ const getVersionBump = () => {
   }
 };
 
-const getLogEntries = log => {
+const getLogEntries = () => {
   if (
     github.context.payload.pull_request.body &&
     github.context.payload.pull_request.body.indexOf("**Change log:**\r\n") > -1
   ) {
-    github.context.payload.pull_request.body.split("**Change log:**\r\n")[1];
+    try {
+      const log = github.context.payload.pull_request.body.split(
+        "**Change log:**\r\n"
+      )[1];
 
-    const changes = log.split("\r\n\r\n");
-    let entries = {};
-    changes.forEach(c => {
-      const split = c.split("\r\n");
+      const changes = log.split("\r\n\r\n");
+      let entries = {};
+      changes.forEach(c => {
+        const split = c.split("\r\n");
 
-      entries[split[0]] = "\r\n" + split.slice(1).join("\r\n");
-    });
+        entries[split[0]] = "\r\n" + split.slice(1).join("\r\n");
+      });
 
-    return entries;
+      return entries;
+    } catch (error) {
+      throw new Error("Change logs are not in correct format");
+    }
   } else {
     throw new Error(`No change log entries found in PR description.`);
   }
