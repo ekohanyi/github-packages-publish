@@ -22,7 +22,7 @@ const getVersionBump = () => {
     } else {
       console.log("i made it to first error ");
       throw new Error(
-        `Invalid version bump type found in PR title. Version bump type must be "patch", "minor", or "major"`
+        `Invalid version bump type found in PR title. \r\nVersion bump type must be "patch", "minor", or "major"`
       );
     }
   } catch (error) {
