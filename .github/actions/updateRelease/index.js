@@ -1,55 +1,59 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 
-// const getByTag = (git, tag) => {
-//   console.log(git.repos.getReleaseByTag);
-//   console.log(tag);
-//   console.log(github.context.repo.owner);
-//   console.log(github.context.repo.repo);
-//   return git.repos.getReleaseByTag({
-//     owner: github.context.repo.owner,
-//     repo: github.context.repo.repo,
-//     tag: tag
-//   });
-// };
+class GithubReleases {
+  git;
+  logs;
+  tags;
 
-const createRelease = (git, tag, logs) => {
-  console.log(logs);
-  const package = Object.keys(logs).filter(t => tag.indexOf(t) > -1)[0];
-  return git.repos.createRelease({
-    body: logs[package],
-    name: tag,
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    tag_name: tag
-  });
+  constructor(token, tags, logs) {
+    this.git = new github.GitHub(token);
+    this.tags = tags;
+    this.logs = logs;
+  }
+
+  createRelease(tag) {
+    const packageName = Object.keys(this.logs).filter(
+      t => tag.indexOf(t) > -1
+    )[0];
+
+    return this.git.repos.createRelease({
+      body: this.logs[packageName],
+      name: tag,
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      tag_name: tag
+    });
+  }
+
+  publishReleases() {
+    this.tags.forEach(tag =>
+      this.createRelease(tag).then(
+        () => {
+          core.info(`Release for ${tag} published successfully`);
+        },
+        error => {
+          throw new Error(JSON.stringify(error));
+        }
+      )
+    );
+  }
+}
+
+const run = () => {
+  try {
+    const tags = core.getInput("tags").split(",");
+    const token = core.getInput("token");
+    const changesRaw = core.getInput("changes");
+
+    const changes = JSON.parse(changesRaw);
+
+    const gitReleases = new GithubReleases(token, tags, changes.logEntries);
+
+    gitReleases.publishReleases();
+  } catch (error) {
+    core.setFailed(error);
+  }
 };
 
-try {
-  const tags = core.getInput("tags").split(",");
-  const token = core.getInput("token");
-  const changesRaw = core.getInput("changes");
-  console.log(changesRaw);
-  const changes = JSON.parse(changesRaw);
-  console.log(token);
-  core.info(tags.toString());
-  const git = new github.GitHub(token);
-
-  tags.forEach(tag =>
-    core.info(
-      JSON.stringify(
-        createRelease(git, tag, changes.logEntries).then(
-          data => {
-            console.log(JSON.stringify(data));
-          },
-          error => {
-            console.log(JSON.stringify(error));
-          }
-        )
-      )
-    )
-  );
-} catch (error) {
-  core.error(error.toString());
-  core.setFailed(error.change.toString());
-}
+run();

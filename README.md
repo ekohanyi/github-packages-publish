@@ -4,16 +4,16 @@ todo:
 - [x] run full flow to make sure it works
 - [x] disable squash merges
 - [x] add PR template
+- [ ] clean up actions
+  - [ ] refactor
+    - [x] encapsulate in classes
+    - [x] rename
+  - [x] add more error handling
 - [ ] clean up workflows
   - [ ] naming
   - [ ] step flows
   - [ ] status setting
   - [ ] move out of /test bucket
-- [ ] clean up actions
-  - [ ] refactor
-    - [ ] encapsulate in classes
-    - [ ] rename
-  - [ ] add more error handling
 - [ ] add unit tests to everything
 
 - [ ] move to good-ui
