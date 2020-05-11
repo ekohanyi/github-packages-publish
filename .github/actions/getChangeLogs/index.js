@@ -38,6 +38,7 @@ const getLogEntries = () => {
       )[1];
 
       const changes = log.split("\r\n\r\n");
+      console.log(changes);
       let entries = {};
       changes.forEach(c => {
         const split = c.split("\r\n");
@@ -77,7 +78,6 @@ const run = () => {
   try {
     core.setOutput("changes", getChanges());
   } catch (error) {
-    console.log(error);
     core.setFailed(error.toString());
   }
 };
