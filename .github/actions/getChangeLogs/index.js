@@ -27,6 +27,21 @@ const getVersionBump = () => {
   }
 };
 
+const validateLogs = log => {
+  // get number of changed packages by counting @ signs in package names
+  const numberChanged = (log.match(/@/g) || []).length;
+  // package change lists should be separated by 2 returns
+  const changes = log.split("\r\n\r\n");
+
+  // if there are no packages listed or their names don't include @ signs, return false
+  if (numberChanged < 1) return false;
+
+  // if number of changed packages doesn't match number of change logs, return false
+  if (numberChanged !== changes.length) return false;
+
+  return true;
+};
+
 const getLogEntries = () => {
   if (
     github.context.payload.pull_request.body &&
@@ -37,11 +52,9 @@ const getLogEntries = () => {
         "**Change log:**\r\n"
       )[1];
 
-      const numberChanged = (log.match(/@/g) || []).length;
-      console.log(numberChanged);
+      if (!validateLogs(log)) throw new Error();
 
       const changes = log.split("\r\n\r\n");
-      console.log(changes);
       let entries = {};
       changes.forEach(c => {
         const split = c.split("\r\n");
