@@ -4,8 +4,8 @@ todo:
 - [x] run full flow to make sure it works
 - [x] disable squash merges
 - [x] add PR template
-- [ ] clean up actions
-  - [ ] refactor
+- [x] clean up actions
+  - [x] refactor
     - [x] encapsulate in classes
     - [x] rename
   - [x] add more error handling
