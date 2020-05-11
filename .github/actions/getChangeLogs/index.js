@@ -15,15 +15,18 @@ const getVersionBump = () => {
       .match(/\[(.*?)\]/)[1]
       .toLowerCase();
 
+    console.log("i made it here");
+
     if (bump === "patch" || bump === "minor" || bump === "major") {
       return bump;
     } else {
+      console.log("i made it to first error ");
       throw new Error(
-        `Invalid version bump type ${bump} found in PR title.
-      Version bump type must be "patch", "minor", or "major"`
+        `Invalid version bump type found in PR title. Version bump type must be "patch", "minor", or "major"`
       );
     }
   } catch (error) {
+    console.log("i made it toversion catch error");
     throw new Error("No version bump keyword found in PR title");
   }
 };
@@ -72,7 +75,8 @@ const run = () => {
   try {
     core.setOutput("changes", getChanges());
   } catch (error) {
-    core.setFailed(error);
+    console.log(error);
+    core.setFailed(error.toString());
   }
 };
 
