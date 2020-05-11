@@ -59,6 +59,9 @@ const getLogEntries = () => {
       changes.forEach(c => {
         const split = c.split("\r\n");
 
+        // if this split doesn't separate package title from changes, throw error
+        if (split.length <= 1) throw new Error();
+
         entries[split[0]] = "\r\n" + split.slice(1).join("\r\n");
       });
 
