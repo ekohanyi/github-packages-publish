@@ -37,6 +37,9 @@ const getLogEntries = () => {
         "**Change log:**\r\n"
       )[1];
 
+      const numberChanged = (log.match(/@/g) || []).length;
+      console.log(numberChanged);
+
       const changes = log.split("\r\n\r\n");
       console.log(changes);
       let entries = {};
