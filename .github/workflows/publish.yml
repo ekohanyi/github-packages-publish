@@ -1,9 +1,14 @@
-# This is a basic workflow to help you get started with Actions
+# This workflow
+# - grabs change logs made from merged PR
+# - grabs the version bump type from that log
+# - calls Lerna publish with that version bump type, lerna pushes tags to github
+# - grabs the newly pushed tags from master
+# - creates releases from change logs based on those pushed tags
 
 name: Publish
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# Action runs on all pushes to master
+# if the push is not a merged commit for some reason, the pipeline will fail
 on:
   push:
     branches: [master]
@@ -11,8 +16,6 @@ on:
 env:
   BUCKET_NAME: good-ui-static-assets
   NODE_VERSION: 13.3.0
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-  PROJECT_ID: good-ui
 
 jobs:
   install:
@@ -34,33 +37,14 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install
         run: yarn
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
 
-  download:
+  Publish:
     name: Grab Change Log from GCP
     runs-on: ubuntu-latest
-    needs: [install]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Restore Cache
-        uses: actions/cache@master
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install
-        run: yarn
       - name: Get commit ID
-        uses: ./.github/actions/getFeatureCommit # Uses an action in the root directory
+        uses: ./.github/actions/get-feature-commit # Uses an action in the root directory
         id: commit
       - run: echo "${{ steps.commit.outputs.commit_hash }}"
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -72,17 +56,7 @@ jobs:
           export_default_credentials: true
       - name: GCP download
         run: |
-          gsutil cp gs://$BUCKET_NAME/test/${{ steps.commit.outputs.commit_hash }}/log.json .
-      - uses: actions/upload-artifact@v1
-        with:
-          name: change-log
-          path: ./log.json
-
-  publish:
-    name: Publish Lerna Packages
-    needs: [install, download]
-    runs-on: ubuntu-latest
-    steps:
+          gsutil cp gs://$BUCKET_NAME/changeLogs/${{ steps.commit.outputs.commit_hash }}/log.json .
       - uses: actions/checkout@v2
         with:
           # pulls all commits (needed for lerna / semantic release to correctly version)
@@ -116,14 +90,10 @@ jobs:
         run: yarn
       - name: Build
         run: yarn build
-      - uses: actions/download-artifact@v1
-        with:
-          name: change-log
-      - run: cat change-log/log.json
       - name: Get version
         id: version
         run: |
-          value=$(cat change-log/log.json | jq -r .bump)
+          value=$(cat ./log.json | jq -r .bump)
           echo The result is $value
           echo ::set-output name=version::${value}
       - name: Publish to GitHub Package Registry
@@ -132,22 +102,15 @@ jobs:
           yarn lerna publish ${{ steps.version.outputs.version }} \
           --registry "https://npm.pkg.github.com/" \
           --yes \
+          --canary \ # temporary for now in case this gets run accidentally 
           --no-verify-access \
-          --force-publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  fun_with_tags:
-    name: Fun with tags
-    needs: [publish]
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v2
         with:
           # pulls all commits (needed for lerna / semantic release to correctly version)
           fetch-depth: "0"
           ref: "master"
-      # pulls all tags (needed for lerna / semantic release to correctly version)
       - run: git fetch --depth=1 origin
       - name: Configure CI Git User
         run: |
@@ -171,18 +134,13 @@ jobs:
           done
           stringTags=$( IFS=$', '; echo "${tags[*]}" )
           echo ::set-output name=tags::${stringTags}
-      - uses: actions/download-artifact@v1
-        with:
-          name: change-log
       - name: Read log.json
         id: log
         uses: juliangruber/read-file-action@v1
         with:
-          path: change-log/log.json
-      - name: Echo log.txt
-        run: echo ${{ steps.log.outputs.content }}
+          path: ./log.json
       - name: Push release descriptions
-        uses: ./.github/actions/updateRelease # Uses an action in the root directory
+        uses: ./.github/actions/update-release # Uses an action in the root directory
         id: release
         with:
           tags: ${{ steps.get_tags.outputs.tags }}
