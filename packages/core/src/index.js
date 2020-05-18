@@ -30,4 +30,4 @@ console.log("what happens with squash");
 
 console.log("squash that bug");
 
-console.log("lets try a thing");
+console.log("im dumb");
