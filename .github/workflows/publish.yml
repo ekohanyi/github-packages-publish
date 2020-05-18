@@ -1,24 +1,27 @@
-# This workflow
-# - grabs change logs made from merged PR
-# - grabs the version bump type from that log
-# - calls Lerna publish with that version bump type, lerna pushes tags to github
-# - grabs the newly pushed tags from master
-# - creates releases from change logs based on those pushed tags
-
-name: Publish
-
-# Action runs on all pushes to master
-# if the push is not a merged commit for some reason, the pipeline will fail
+name: Build and Deploy GoodUI
 on:
   push:
     branches: [master]
-
+  pull_request:
+    branches: "*"
 env:
   BUCKET_NAME: good-ui-static-assets
+  DOCKER_REGISTRY: us.gcr.io
   NODE_VERSION: 13.3.0
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+  PROJECT_ID: good-ui
 jobs:
+  #
+  # NODE TASKS:
+  #   Feature Branch Flow =>
+  #     Install deps
+  #     Lint, Test, Storybook
+  #     Upload Storybook, Publish NPM Canary Branch
+  #
+  #   Master Branch Flow =>
+  #     Install deps
+  #     Lint, Test, Storybook
+  #     Upload Storybook, Version Packages && Push Tagged Commit && Publish
   install:
     name: Install Node Dependencies
     runs-on: ubuntu-latest
@@ -39,14 +42,287 @@ jobs:
       - name: Install
         run: yarn
 
-  Publish:
-    name: Grab Change Log from GCP
-    runs-on: ubuntu-latest
+  lint:
+    name: Lint
     needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Restore Cache
+        id: cache-node-modules
+        uses: actions/cache@master
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: yarn
+      - name: Lint
+        run: yarn lint
+
+  test:
+    name: Test and CodeCov
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Restore Cache
+        id: cache-node-modules
+        uses: actions/cache@master
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: yarn
+      - name: Test
+        run: |
+          yarn test:coverage
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+  # storybook:
+  #   name: Build Storybook
+  #   needs: [install]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@master
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #     - name: Restore Cache
+  #       id: cache-node-modules
+  #       uses: actions/cache@master
+  #       with:
+  #         path: |
+  #           node_modules
+  #           */*/node_modules
+  #         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-
+  #     - name: Install
+  #       if: steps.cache-node-modules.outputs.cache-hit != 'true'
+  #       run: yarn
+  #     - name: Storybook
+  #       run: yarn storybook:build
+  #     - uses: actions/upload-artifact@v1
+  #       with:
+  #         name: storybook-assets
+  #         path: .storybook/static
+
+  # upload:
+  #   name: Upload Storybook to GCP
+  #   runs-on: ubuntu-latest
+  #   needs: [lint, test, storybook]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+  #       with:
+  #         version: '285.0.0'
+  #         project_id: 'good-ui'
+  #         service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+  #         service_account_key: ${{ secrets.GCP_SA_KEY }}
+  #         export_default_credentials: true
+  #     - uses: actions/download-artifact@v1
+  #       with:
+  #         name: storybook-assets
+  #     - uses: ./.github/actions/ci-env
+  #     - name: GCP Upload
+  #       run: |
+  #         gsutil -m rsync -r -c storybook-assets gs://$BUCKET_NAME/$BRANCH_NAME
+
+  # publish_canary:
+  #   name: Publish Lerna Packages
+  #   needs: [lint, test, storybook]
+  #   if: github.ref != 'refs/heads/master'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@master
+  #       with:
+  #         node-version: 13.3.0
+  #         registry-url: https://npm.pkg.github.com/
+  #         scope: '@goodrx'
+  #     - name: Restore Cache
+  #       id: cache-node-modules
+  #       uses: actions/cache@master
+  #       with:
+  #         path: |
+  #           node_modules
+  #           */*/node_modules
+  #         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-
+  #     - name: Install
+  #       if: steps.cache-node-modules.outputs.cache-hit != 'true'
+  #       run: yarn
+  #     - name: Build
+  #       run: yarn build
+  #     - name: Publish to GitHub Package Registry
+  #       run: |
+  #         yarn lerna publish \
+  #         --registry "https://npm.pkg.github.com/" \
+  #         --yes \
+  #         --no-verify-access \
+  #         --canary \
+  #         --no-push \
+  #         --exact \
+  #         --force-publish \
+  #         --preid "${GITHUB_REF##*/}-${GITHUB_SHA:0:7}"
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  #
+  # GCLOUD TASKS:
+  #   Starts in Parallel with Node Build =>
+  #     Pull previous Docker Image
+  #     Build New Docker Image
+  #     Push New Docker Image
+  #
+  #   After Node Build Linting && Testing, and After Docker Build/Push =>
+  #     Deploy Previously Built Image to GCP Cloud-Run
+  #     Update GitHub Deployments API with Deployed Path
+  # build-image:
+  #   name: Build and Push Docker Image to GCP
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #       with:
+  #         fetch-depth: 2
+  #     - uses: ./.github/actions/ci-env
+  #     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+  #       with:
+  #         version: '285.0.0'
+  #         project_id: ${{ env.PROJECT_ID }}
+  #         service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+  #         service_account_key: ${{ secrets.GCP_SA_KEY }}
+  #         export_default_credentials: true
+  #     - name: Login to gcloud registry
+  #       id: gcloud
+  #       run: |
+  #         gcloud auth configure-docker
+  #         echo ::set-output name=username::oauth2accesstoken
+  #         TOKEN=$(gcloud auth print-access-token)
+  #         echo ::add-mask::${TOKEN}
+  #         echo ::set-output name=password::${TOKEN}
+  #     - name: Export Name
+  #       id: image
+  #       run: |
+  #         echo "::set-env name=DOCKER_PREV_IMAGE::$DOCKER_REGISTRY/$PROJECT_ID/$BRANCH_NAME:$(git rev-parse HEAD^1)"
+  #         echo "::set-env name=DOCKER_NAME::$PROJECT_ID/$BRANCH_NAME"
+  #         echo "::set-output name=current_sha::$GITHUB_SHA"
+  #     - name: Pull
+  #       continue-on-error: true
+  #       run: |
+  #         docker pull $DOCKER_PREV_IMAGE
+  #     - name: Build and Push
+  #       uses: elgohr/Publish-Docker-Github-Action@master
+  #       with:
+  #         name: ${{ env.DOCKER_NAME }}
+  #         registry: ${{ env.DOCKER_REGISTRY }}
+  #         username: ${{ steps.gcloud.outputs.username }}
+  #         password: ${{ steps.gcloud.outputs.password }}
+  #         buildargs: NPM_TOKEN
+  #         buildoptions: '--cache-from $DOCKER_PREV_IMAGE'
+  #         tags: 'latest,${{ steps.image.outputs.current_sha }}'
+
+  # run-image:
+  #   name: Deploy Image to Google Cloud Run
+  #   runs-on: ubuntu-latest
+  #   needs: [build-image, lint, test, storybook]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+  #       with:
+  #         version: '285.0.0'
+  #         project_id: ${{ env.PROJECT_ID }}
+  #         service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+  #         service_account_key: ${{ secrets.GCP_SA_KEY }}
+  #         export_default_credentials: true
+  #     - uses: ./.github/actions/ci-env
+  #     - name: Add Github Deployment
+  #       id: gh_deploy
+  #       run: |
+  #         curl -X POST \
+  #         --header "Authorization:token ${GITHUB_TOKEN}" \
+  #         -d \
+  #         "{
+  #           \"ref\":\"${BRANCH_NAME}\",
+  #           \"auto_merge\":false,
+  #           \"required_contexts\":[],
+  #           \"environment\":\"${BRANCH_NAME}\"
+  #         }" \
+  #         https://api.github.com/repos/GoodRx/good-ui/deployments | \
+  #         jq -r '.url' | \
+  #         xargs -I {} sh -c "echo '##[set-output name=gh_url;]{}'"
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Deploy
+  #       id: gcp_deploy
+  #       run: |
+  #         gcloud run deploy $BRANCH_NAME \
+  #         --image "$DOCKER_REGISTRY/$PROJECT_ID/$BRANCH_NAME:$GITHUB_SHA" \
+  #         --region us-central1 \
+  #         --platform managed \
+  #         --allow-unauthenticated \
+  #         --memory 2Gi;
+  #         gcloud run services list --platform managed --filter="$BRANCH_NAME" | \
+  #         awk 'NR==2 {print $4}' | \
+  #         xargs -I {} sh -c "echo '##[set-output name=gcp_url;]{}'"
+  #     - name: Get Failed Deploy
+  #       if: failure()
+  #       run: |
+  #         echo "::set-env name=GH_STATUS::failure"
+  #     - name: Update Github Deployment
+  #       if: always()
+  #       run: |
+  #         STATUS="${GH_STATUS:-success}"
+  #         curl -X POST \
+  #         --header "Authorization:token ${GITHUB_TOKEN}" \
+  #         -d \
+  #         "{
+  #           \"state\":\"${STATUS}\",
+  #           \"target_url\":\"${GCP_URL}\"
+  #         }" \
+  #         $GH_URL/statuses
+  #       env:
+  #         GCP_URL: ${{ steps.gcp_deploy.outputs.gcp_url }}
+  #         GH_URL: ${{ steps.gh_deploy.outputs.gh_url }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # The following section:
+  #   grabs change logs made from the merged PR
+  #   grabs the version bump type from that log
+  #   calls Lerna publish with that version bump type, lerna pushes tags to github
+  #   grabs the newly pushed tags from master
+  #   creates releases from change logs based on those pushed tags
+
+  # each job in this section only fires if the github.ref is 'refs/heads/master'
+  download:
+    name: Grab Change Log from GCP
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
       - name: Get commit ID
-        uses: ./.github/actions/get-feature-commit # Uses an action in the root directory
+        uses: ./.github/actions/get-feature-commit # Use private action feature-commit
         id: commit
       - run: echo "${{ steps.commit.outputs.commit_hash }}"
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -59,9 +335,19 @@ jobs:
       - name: GCP download
         run: |
           gsutil cp gs://$BUCKET_NAME/changeLogs/${{ steps.commit.outputs.commit_hash }}/log.json .
+      - uses: actions/upload-artifact@v1
+        with:
+          name: change-log
+          path: ./log.json
+
+  publish:
+    name: Publish Lerna Packages
+    needs: [install, lint, test, download]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
       - uses: actions/checkout@v2
         with:
-          # pulls all commits (needed for lerna / semantic release to correctly version)
           fetch-depth: "0"
       # pulls all tags (needed for lerna / semantic release to correctly version)
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -92,10 +378,13 @@ jobs:
         run: yarn
       - name: Build
         run: yarn build
+      - uses: actions/download-artifact@v1
+        with:
+          name: change-log
       - name: Get version
         id: version
         run: |
-          value=$(cat ./log.json | jq -r .bump)
+          value=$(cat change-log/log.json | jq -r .bump)
           echo The result is $value
           echo ::set-output name=version::${value}
       - name: Publish to GitHub Package Registry
@@ -108,9 +397,16 @@ jobs:
           --no-verify-access \
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update_releases:
+    name: Update Releases for pushed tags
+    needs: [publish]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
       - uses: actions/checkout@v2
         with:
-          # pulls all commits (needed for lerna / semantic release to correctly version)
+          # pulls the tags that were just pushed by lerna
           fetch-depth: "0"
           ref: "master"
       - run: git fetch --depth=1 origin
@@ -123,6 +419,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get pushed tags
         id: get_tags
+        # - echo out the git tags log
+        # - search the log for tags associated with the last commit
+        # - clean up the tags and pass them forward as a comma separated string
         run: |
           commit=$(echo `git log --format="%H" -n 1`)
           echo $commit
@@ -136,13 +435,16 @@ jobs:
           done
           stringTags=$( IFS=$', '; echo "${tags[*]}" )
           echo ::set-output name=tags::${stringTags}
+      - uses: actions/download-artifact@v1
+        with:
+          name: change-log
       - name: Read log.json
         id: log
         uses: juliangruber/read-file-action@v1
         with:
-          path: ./log.json
+          path: change-log/log.json
       - name: Push release descriptions
-        uses: ./.github/actions/update-release # Uses an action in the root directory
+        uses: ./.github/actions/update-release # Use private action update-release
         id: release
         with:
           tags: ${{ steps.get_tags.outputs.tags }}
