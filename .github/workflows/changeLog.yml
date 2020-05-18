@@ -55,9 +55,4 @@ jobs:
           name: change-log
       - run: echo "$BRANCH_ID"
       - name: GCP Upload
-        run: |
-          if [ "${{ github.head_ref }}" == "master" ]; then
-            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/changeLogs/
-          else
-            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/changeLogs/$BRANCH_ID
-          fi
+        run: gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/changeLogs/$BRANCH_ID
