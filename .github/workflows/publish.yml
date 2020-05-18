@@ -387,7 +387,7 @@ jobs:
           yarn lerna publish ${{ steps.version.outputs.version }} \
           --registry "https://npm.pkg.github.com/" \
           --yes \
-          --canary \ # temporary for now in case this gets run accidentally 
+          --canary \ 
           --no-verify-access \
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
