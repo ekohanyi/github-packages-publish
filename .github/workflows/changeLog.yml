@@ -1,9 +1,8 @@
-# This is a basic workflow to help you get started with Actions
-
+# This workflow generates a change log based on PR title and description
+# and pushes that log to google cloud storage
 name: Generate Change Log
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# Runs on pull_request open, edit, reopen, and synchronize (commit push to branch) events
 on:
   pull_request:
     branches:
@@ -11,7 +10,7 @@ on:
     types:
       - "opened"
       - "edited"
-      - "reopened"
+      - "synchronize"
 
 env:
   BUCKET_NAME: good-ui-static-assets
@@ -47,20 +46,8 @@ jobs:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Restore Cache
-        uses: actions/cache@master
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
       - name: Pull changes from description
-        uses: ./.github/actions/getChangeLogs # Uses an action in the root directory
+        uses: ./.github/actions/get-logs # Uses an action in the root directory
         id: changeLog
       # Use the output from the `changeLog` step
       - name: Write changes to file
@@ -88,9 +75,4 @@ jobs:
           name: change-log
       - run: echo "$BRANCH_ID"
       - name: GCP Upload
-        run: |
-          if [ "${{ github.head_ref }}" == "master" ]; then
-            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/changeLogs/
-          else
-            gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/changeLogs/$BRANCH_ID
-          fi
+        run: gsutil -m rsync -r -c change-log gs://$BUCKET_NAME/changeLogs/$BRANCH_ID
