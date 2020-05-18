@@ -9,11 +9,11 @@ todo:
     - [x] encapsulate in classes
     - [x] rename
   - [x] add more error handling
-- [ ] clean up workflows
-  - [ ] naming
-  - [ ] step flows
-  - [ ] status setting
-  - [ ] move out of /test bucket
+- [x] clean up workflows
+  - [x] naming
+  - [x] step flows
+  - [x] status setting
+  - [x] move out of /test bucket
 - [ ] add unit tests to everything
 
 - [ ] move to good-ui

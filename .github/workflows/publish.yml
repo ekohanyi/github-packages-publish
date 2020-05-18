@@ -11,8 +11,6 @@ on:
 env:
   BUCKET_NAME: good-ui-static-assets
   NODE_VERSION: 13.3.0
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-  PROJECT_ID: good-ui
 
 jobs:
   install:
@@ -34,10 +32,6 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install
         run: yarn
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
 
   download:
     name: Grab Change Log from GCP
@@ -72,7 +66,7 @@ jobs:
           export_default_credentials: true
       - name: GCP download
         run: |
-          gsutil cp gs://$BUCKET_NAME/test/${{ steps.commit.outputs.commit_hash }}/log.json .
+          gsutil cp gs://$BUCKET_NAME/changeLogs/${{ steps.commit.outputs.commit_hash }}/log.json .
       - uses: actions/upload-artifact@v1
         with:
           name: change-log
@@ -179,8 +173,6 @@ jobs:
         uses: juliangruber/read-file-action@v1
         with:
           path: change-log/log.json
-      - name: Echo log.txt
-        run: echo ${{ steps.log.outputs.content }}
       - name: Push release descriptions
         uses: ./.github/actions/updateRelease # Uses an action in the root directory
         id: release
