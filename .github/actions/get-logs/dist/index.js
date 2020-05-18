@@ -8279,7 +8279,7 @@ module.exports=
         }
       };
       exports.validateLogs=(log) => {
-        const numberChanged=(log.match(/@goodrx/g)||[]).length;
+        const numberChanged=(log.match(/@/g)||[]).length;
         if(numberChanged<1)
           return false;
         const changes=log.split('\r\n\r\n');
