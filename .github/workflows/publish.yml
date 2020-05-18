@@ -41,6 +41,7 @@ jobs:
   Publish:
     name: Grab Change Log from GCP
     runs-on: ubuntu-latest
+    needs: [install]
     steps:
       - uses: actions/checkout@v2
       - name: Get commit ID
