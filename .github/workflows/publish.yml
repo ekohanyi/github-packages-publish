@@ -387,6 +387,7 @@ jobs:
           yarn lerna publish ${{ steps.version.outputs.version }} \
           --registry "https://npm.pkg.github.com/" \
           --yes \
+          --amend \
           --no-verify-access \
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
