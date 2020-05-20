@@ -389,6 +389,7 @@ jobs:
           --yes \
           --amend \
           --no-verify-access \
+          --force-publish \
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
